@@ -61,15 +61,11 @@ cycloidal-gear-milling/
 
 ### Generate a gear (CSV + OBJ)
 
-scripts/CycloidGearToCSVAndOBJ.m
-
-Code
+- scripts/CycloidGearToCSVAndOBJ.m
 
 ### Generate CNC G-code
 
-scripts/CycloidGearMilling.m
-
-Code
+- scripts/CycloidGearMilling.m
 
 ## Core Concepts
 
