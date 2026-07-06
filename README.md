@@ -16,6 +16,7 @@ The codebase is modular, mathematically rigorous, and structured for clarity and
 
 ## Repository Structure
 
+```
 cycloidal-gear-milling/
 │
 ├── geometry/
@@ -49,7 +50,7 @@ cycloidal-gear-milling/
 │
 └── docs/
 
-Code
+```
 
 ## Quick Start
 
