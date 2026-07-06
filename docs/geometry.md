@@ -4,15 +4,15 @@ A practical engineering guide for understanding and using cycloidal gear geometr
 1. Introduction
 Cycloidal gears are defined by the rolling motion of a circle (the rolling circle) along another circle (the pitch circle). They were historically used in clocks and precision mechanisms because they offer:
 
-smooth meshing
+- smooth meshing
 
-low friction
+- low friction
 
-low wear
+- low wear
 
-tolerance of small manufacturing errors
+-tolerance of small manufacturing errors
 
-excellent performance at low torque
+- excellent performance at low torque
 
 This document explains the geometry implemented in CBT_CycloidGear and how the parameters relate to the mathematical curves.
 
