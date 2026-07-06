@@ -1,11 +1,176 @@
-# Cycloidal-Gear-Milling
-- MATLAB scripts for the generation of true cycloidal gears: G-code for milling and csv / obj exports
+📘 Cycloidal Gear Milling Toolkit (MATLAB)
+A complete, open‑source workflow for generating cycloidal gears, exporting geometry, and producing CNC G‑code.
 
-The repository provides:
-- A set of classes for the generation of true epi / hypo cycloidal gear wheel shapes.
-    - Inputs include the module, toothcount, rolling ball radii, and addendum / dedendum heights
-    - The gear classes calculate the epi and hypo branches of the tooth shape and insert a fillet at the dedendum to allow for milling
-    - Other are CSV and / or OBJ files of a single tooth, which can be imported in tools like Fusion 360 for manipulation and subsequent 3D printing
-- A set of CAD classes to support production of machine-ready G-code for the milling of the designed gears
-    - The CAD, in the simplest use case, provide G-code for vertical 3 axis milling
-    - The CAD classes also support G-code generation for 4-axis milling with the A-axis parallel X or parallel Z   
+🔧 Overview
+This repository provides a full MATLAB implementation of cycloidal gear geometry, offset‑curve milling, G‑code generation, and Fusion‑friendly exports. It is designed for:
+
+horology and clockmaking
+
+CNC machining of cycloidal wheels and pinions
+
+computational geometry exploration
+
+educational demonstrations
+
+open‑source engineering workflows
+
+The codebase is modular, mathematically rigorous, and structured for clarity and extensibility.
+
+🧱 Repository Structure
+Code
+cycloidal-gear-milling/
+│
+├── geometry/        # Core cycloid geometry + meshing
+│   ├── CBT_CycloidGear.m
+│   └── CBT_Meshing.m
+│
+├── milling/         # Milling paths, layers, traces, tools, feeds
+│   ├── CBT_GearMilling.m
+│   ├── CBT_MillPath.m
+│   ├── CBT_Layer.m
+│   ├── CBT_Trace.m
+│   ├── CBT_Tool.m
+│   ├── CBT_ToolTypes.m
+│   ├── CBT_TraceTypes.m
+│   └── CBT_Feeds.m
+│
+├── scripts/         # Production scripts (G-code, CSV, OBJ)
+│   ├── CycloidGearMilling.m
+│   ├── CycloidGearToCSVAndOBJ.m
+│   └── PinionAndWheelSet.m
+│
+├── examples/        # Illustrative scripts
+│   ├── FilletRadiusFunctionOfHd.m
+│   ├── Optimise3StageGearTrain.m
+│   └── Optimise4StageGearTrain.m
+│
+├── output/          # Export targets (created locally)
+│   ├── cnc/
+│   ├── csv/
+│   └── obj/
+│
+└── docs/            # Extended documentation (to be added)
+🚀 Quick Start
+1. Clone or download the repository
+Place it anywhere on your system.
+
+2. Open MATLAB
+You can run scripts from any working directory — they are self‑locating.
+
+3. Generate a gear
+Run:
+
+matlab
+scripts/CycloidGearToCSVAndOBJ.m
+This produces:
+
+output/csv/<name>.csv — Fusion‑friendly gap curve
+
+output/obj/<name>.obj — mesh of half‑gap for 3D workflows
+
+4. Generate CNC G‑code
+Run:
+
+matlab
+scripts/CycloidGearMilling.m
+This produces:
+
+output/cnc/<name>_Finishing.cnc
+
+output/cnc/<name>_Roughing1.cnc
+
+output/cnc/<name>_Roughing2.cnc
+
+The G‑code includes a circular pattern loop for full gear machining.
+
+⚙️ Core Concepts
+Cycloidal Geometry
+The geometry is implemented in CBT_CycloidGear, including:
+
+epicycloid addendum
+
+hypocycloid dedendum
+
+fillet construction
+
+offset curves for milling
+
+full wheel and gap generation
+
+OBJ mesh export
+
+See geometry documentation for details.
+
+Milling Workflow
+CBT_GearMilling generates:
+
+finishing offset curves
+
+roughing curves with rest machining
+
+adaptive sampling
+
+mirrored tooth gaps
+
+multi‑layer mill paths
+
+G‑code subroutines + circular pattern
+
+See milling documentation.
+
+Exports
+The toolkit supports:
+
+CSV (Fusion 360 knife‑body workflow)
+
+OBJ (mesh export)
+
+CNC G‑code (3‑axis milling)
+
+See export documentation.
+
+📂 Production Scripts
+CycloidGearMilling.m
+Generates roughing + finishing G‑code for CNC machining.
+
+CycloidGearToCSVAndOBJ.m
+Exports a single gear as CSV and OBJ.
+
+PinionAndWheelSet.m
+Generates a matched pinion + wheel pair, plots them, and exports CSV.
+
+📚 Examples
+These scripts illustrate usage patterns and parameter studies:
+
+FilletRadiusFunctionOfHd.m — how fillet radius depends on dedendum height
+
+Optimise3StageGearTrain.m — brute‑force search for 3‑stage ratios
+
+Optimise4StageGearTrain.m — canonicalised 4‑stage gear‑train search
+
+See examples documentation.
+
+🧩 Dependencies
+The project uses pure MATLAB, no toolboxes required.
+
+📝 License
+Choose your preferred open‑source license (MIT recommended).
+MIT allows free use, modification, and commercial use with attribution.
+
+🤝 Contributing
+Contributions are welcome:
+
+new examples
+
+documentation improvements
+
+additional milling strategies
+
+Fusion/FreeCAD plugins
+
+Python ports
+
+Open an issue or submit a pull request.
+
+📬 Contact
+For questions or collaboration, feel free to open an issue or start a discussion.
