@@ -50,31 +50,28 @@ cycloidal-gear-milling/
 │   └── obj/
 │
 └── docs/            # Extended documentation (to be added)
-
 🚀 Quick Start
-1. Clone or download the repository
-Place it anywhere on your system.
+Clone or download the repository.
 
-2. Open MATLAB
-You can run scripts from any working directory — they are self‑locating.
+Open MATLAB.
 
-3. Generate a gear
-Run:
+Run a production script from /scripts — they are self‑locating and work regardless of MATLAB’s working directory.
 
+Generate geometry, exports, or G‑code depending on your workflow.
+
+Generate a gear (CSV + OBJ)
 matlab
 scripts/CycloidGearToCSVAndOBJ.m
-This produces:
+Produces:
 
-output/csv/<name>.csv — Fusion‑friendly gap curve
+output/csv/<name>.csv
 
-output/obj/<name>.obj — mesh of half‑gap for 3D workflows
+output/obj/<name>.obj
 
-4. Generate CNC G‑code
-Run:
-
+Generate CNC G‑code
 matlab
 scripts/CycloidGearMilling.m
-This produces:
+Produces:
 
 output/cnc/<name>_Finishing.cnc
 
@@ -82,11 +79,9 @@ output/cnc/<name>_Roughing1.cnc
 
 output/cnc/<name>_Roughing2.cnc
 
-The G‑code includes a circular pattern loop for full gear machining.
-
 ⚙️ Core Concepts
 Cycloidal Geometry
-The geometry is implemented in CBT_CycloidGear, including:
+Implemented in CBT_CycloidGear:
 
 epicycloid addendum
 
@@ -100,10 +95,10 @@ full wheel and gap generation
 
 OBJ mesh export
 
-See geometry documentation for details.
+See geometry documentation.
 
 Milling Workflow
-CBT_GearMilling generates:
+Implemented in CBT_GearMilling:
 
 finishing offset curves
 
@@ -141,22 +136,19 @@ PinionAndWheelSet.m
 Generates a matched pinion + wheel pair, plots them, and exports CSV.
 
 📚 Examples
-These scripts illustrate usage patterns and parameter studies:
+FilletRadiusFunctionOfHd.m — fillet radius vs dedendum height
 
-FilletRadiusFunctionOfHd.m — how fillet radius depends on dedendum height
-
-Optimise3StageGearTrain.m — brute‑force search for 3‑stage ratios
+Optimise3StageGearTrain.m — brute‑force 3‑stage ratio search
 
 Optimise4StageGearTrain.m — canonicalised 4‑stage gear‑train search
 
 See examples documentation.
 
 🧩 Dependencies
-The project uses pure MATLAB, no toolboxes required.
+Pure MATLAB — no toolboxes required.
 
 📝 License
-Choose your preferred open‑source license (MIT recommended).
-MIT allows free use, modification, and commercial use with attribution.
+MIT recommended (permissive, simple, widely used).
 
 🤝 Contributing
 Contributions are welcome:
@@ -174,4 +166,4 @@ Python ports
 Open an issue or submit a pull request.
 
 📬 Contact
-For questions or collaboration, feel free to open an issue or start a discussion.
+For questions or collaboration, open an issue or start a discussion.
