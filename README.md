@@ -15,6 +15,7 @@ educational demonstrations
 open‑source engineering workflows
 
 The codebase is modular, mathematically rigorous, and structured for clarity and extensibility.
+
 ´´´
 🧱 Repository Structure
 Code
