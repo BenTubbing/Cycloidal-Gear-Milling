@@ -1,7 +1,9 @@
 📘 Cycloidal Gear Geometry
+
 A practical engineering guide for understanding and using cycloidal gear geometry in this MATLAB toolkit.
 
 1. Introduction
+
 Cycloidal gears are defined by the rolling motion of a circle (the rolling circle) along another circle (the pitch circle). They were historically used in clocks and precision mechanisms because they offer:
 
 - smooth meshing
@@ -10,13 +12,14 @@ Cycloidal gears are defined by the rolling motion of a circle (the rolling circl
 
 - low wear
 
--tolerance of small manufacturing errors
+- tolerance of small manufacturing errors
 
 - excellent performance at low torque
 
 This document explains the geometry implemented in CBT_CycloidGear and how the parameters relate to the mathematical curves.
 
 2. The Pitch Circle
+3. 
 Every cycloidal gear begins with a pitch circle of radius:
 
 𝑅
@@ -37,21 +40,22 @@ where:
 
 The pitch circle is the reference for:
 
-tooth spacing
+- tooth spacing
 
-rolling circle motion
+- rolling circle motion
 
-addendum and dedendum heights
+- addendum and dedendum heights
 
-fillet geometry
+- fillet geometry
 
-meshing between pinion and wheel
+- meshing between pinion and wheel
 
 In this toolkit, the pitch radius is stored as:
 
-Code
-gear.radiusPitch
+- gear.radiusPitch
+
 3. Rolling Circle
+
 Cycloidal gears use a rolling circle of radius:
 
 𝑅
