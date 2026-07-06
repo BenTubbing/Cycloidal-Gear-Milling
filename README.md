@@ -15,7 +15,7 @@ educational demonstrations
 open‑source engineering workflows
 
 The codebase is modular, mathematically rigorous, and structured for clarity and extensibility.
-
+´´´
 🧱 Repository Structure
 Code
 cycloidal-gear-milling/
@@ -50,6 +50,8 @@ cycloidal-gear-milling/
 │   └── obj/
 │
 └── docs/            # Extended documentation (to be added)
+```
+
 🚀 Quick Start
 Clone or download the repository.
 
