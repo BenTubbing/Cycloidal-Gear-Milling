@@ -1,7 +1,9 @@
 📘 Cycloidal Gear Milling Toolkit (MATLAB)
+
 A complete, open‑source workflow for generating cycloidal gears, exporting geometry, and producing CNC G‑code.
 
 🔧 Overview
+
 This repository provides a full MATLAB implementation of cycloidal gear geometry, offset‑curve milling, G‑code generation, and Fusion‑friendly exports. It is designed for:
 
 horology and clockmaking
@@ -16,9 +18,10 @@ open‑source engineering workflows
 
 The codebase is modular, mathematically rigorous, and structured for clarity and extensibility.
 
-´´´
 🧱 Repository Structure
 Code
+
+```
 cycloidal-gear-milling/
 │
 ├── geometry/        # Core cycloid geometry + meshing
@@ -51,9 +54,11 @@ cycloidal-gear-milling/
 │   └── obj/
 │
 └── docs/            # Extended documentation (to be added)
+
 ```
 
 🚀 Quick Start
+
 Clone or download the repository.
 
 Open MATLAB.
@@ -129,6 +134,7 @@ CNC G‑code (3‑axis milling)
 See export documentation.
 
 📂 Production Scripts
+
 CycloidGearMilling.m
 Generates roughing + finishing G‑code for CNC machining.
 
@@ -139,6 +145,7 @@ PinionAndWheelSet.m
 Generates a matched pinion + wheel pair, plots them, and exports CSV.
 
 📚 Examples
+
 FilletRadiusFunctionOfHd.m — fillet radius vs dedendum height
 
 Optimise3StageGearTrain.m — brute‑force 3‑stage ratio search
@@ -148,12 +155,15 @@ Optimise4StageGearTrain.m — canonicalised 4‑stage gear‑train search
 See examples documentation.
 
 🧩 Dependencies
+
 Pure MATLAB — no toolboxes required.
 
 📝 License
+
 MIT recommended (permissive, simple, widely used).
 
 🤝 Contributing
+
 Contributions are welcome:
 
 new examples
