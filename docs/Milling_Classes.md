@@ -1,4 +1,4 @@
-#The Milling Classes
+# The Milling Classes
 
 The code in the milling section represents a CAM suite for 3-axes or 4-axes milling in 3 dimensions. It was written some years ago for contour-milling of complex surfaces like centrifugal compressor wheels. In addition to the X, Y, Z, A coordinates, it can handle a fixed swivel angle B, i.e. for machines with a swivel head. It was written for an EMCO F1CNC with an Eding CNC controller.
 
