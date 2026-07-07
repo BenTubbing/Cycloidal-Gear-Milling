@@ -1,216 +1,78 @@
 # Gear Milling
 
-This document describes the gear‑specific milling workflow built on top of the general CAM suite. It explains how cycloidal gear geometry is turned into toolpaths, how roughing and finishing are organised, and how the circular tooth pattern is implemented in G‑code.
+This document describes the gear‑specific milling workflow built on top of the general CAM suite. It explains how cycloidal gear geometry is turned into toolpaths, how roughing and finishing are organised, and how the circular tooth pattern is implemented in G‑code. The general CAM classes (CBT_MillPath, CBT_Layer, CBT_Trace, CBT_Tools, CBT_MillingMachine) are documented separately. Here we focus on the CBT_GearMilling class and its use.
 
-The general CAM classes (CBT_MillPath, CBT_Layer, CBT_Trace, CBT_Tools, CBT_MillingMachine) are documented separately. Here we focus on the CBT_GearMilling class and its use.
+By and large, we describe the working of the key scripts in the scripts folder.
 
-1. Overview
-Gear milling in this toolkit is based on three ideas:
+1. Creation of a the gear object
+The functions for gear creation are described in the document Gear_Geometry. A gear is created using the create(..) function, which takes as inputs the module, the tooth count, the rolling circle radii, the addendum and dedendum heights. For example: gear = CBT_CycloidGear.create(1.2, 10, 2.0, 2.0, 1.0, 1.05) are typical numbers for a gear of module 1.2 with 10 teeth. At this point, the gear is fully defined.
 
-work in object coordinates (gear centre, tooth gap)
+2. Creation of the gear milling object
+A CBT_GearMilling object is then created, using the function CBT_GearMilling.create(gear, safeR, safeZ), where:
+- gear is the gear from the step
+- safeR is a safe radius for the mill. It is only used in the G code for the circular pattern, not in the mill path of the tooth gap.
+- safeZ is a safe Z value for the mill. It is only used in the G code for the circular pattern, not in the mill path the tooth gap.
 
-generate offset curves for the tool centre
+3. Creation of the milling curves
+CBT_GearMilling, by querying its gear property, calculates the mill curves, offset from the tooth curve by a distance millradius + stockToLeave.
+**In the current version, we use a flat end mill and take small radial cuts at full depth. We assume that the stock diameter is prepared to equal the outer radius of the gear.**
 
-use the CAM suite to turn these curves into G‑code
+We have two different kinds of millpath: roughing and finishing.
 
-The gear geometry (pitch radius, addendum, dedendum, fillet, epi/hypo curves) is provided by CBT_CycloidGear. CBT_GearMilling takes that geometry and builds:
+Roughing millpaths are created by CBT_GearMilling.createRoughingMillCurve(tolerance, millDiameter, stockToLeave, xClearance, cutDepth), where:
+- tolerance is the error allowed by the adaptive sampling algorithm, typical values are 0.01 to 0.001mm
+- millDiameter is the diameter of the mill
+- stockToLeave is the material to be left for the finishing cut
+- xClearance is the radial distance outside of the stock at which the mill path starts and end. Specifically: radiusStart = obj.rStock + millRadius + xClearance
+- cutDepth is an array of **radial depth** of cut values.
+The resulting mill path is best appreciated by looking at the graphs produced by the script. For each cut there is a radial cutting move at the radial cut depth, followed by a small retract and positioning for the next cut.
 
-a finishing path that cuts the final tooth shape
+The next function to be called creates the actual millpath from these curves. Hence, in this function we interface with the CAM suite.
+We have millPathRoughing1 = milling.createRoughingMillPath(zCut, zRetract), where:
+- zCut is the vertical depth Z of the cut
+- zRetract is the Z of retract moves
+Finally, this function also sets the zero point (which will become the origin of the machine's work coordinates) 
+The resulting mill path can be plotted. 
 
-one or more roughing paths that remove bulk material
+The script also illustrates how the roughing stage implements the concept of rest machining. One can start with a mill that is too large to mill all the way down to the fillet. One sets the radial cut depth array. At some cut depth the mill, accounting for stock to leave, will no longer fit and the script will throw an error. In that case, the user has to modify the cut depth array. Until no error is thrown. One can then continue with a smaller mill. The first cut depth of the smaller mill should be equal to, or slightly smaller, than the last cut depth of the bigger mill.
 
-a circular pattern that repeats the gap around all teeth
+The procedure for the finishing millpath is, mutatis mutandis, the same. The finishing cut simply runs, at full depth, along the periphery of the tooth to remove the roughing stock to leave. Optionally, one can leave stock to leave also for a finishing cut.
 
-G‑code, currently tuned to an Eding CNC controller
+Finally, one creates the machine and the tools, using the following calls: 
 
-2. Inputs to CBT_GearMilling
-The main inputs are:
+machine = CBT_MillingMachine.create3Axis();
 
-gear geometry object (CBT_CycloidGear)
+toolR1 = CBT_Tool.create(88, CBT_ToolTypes.endmill, 2.0, 135.00);
+toolR2 = CBT_Tool.create(89, CBT_ToolTypes.endmill, 1.0, 135.00);
+toolF  = CBT_Tool.create(89, CBT_ToolTypes.endmill, 1.0, 135.00);
+where:
+- the first argument is the tool index in the machine's tool table
+- the second arguments indicates this is a standard end mill
+- the third argument is the diameter
+- the final argument - 135.0 - is not meaningfull in this context, it is only relevant to swivel settings.
 
-module, tooth count, rolling radii, hA, hD
+For each operation, we need to set the tool, the feeds, and the millpath. For example:µ
+machine.setTool(toolF);
+machine.setFeeds(10, 25, 15, 150, 25, 150, 150);
+machine.setMillPath(millPathFinishing);
 
-mill diameter
+All is ready now for extracting the G-code:
 
-stock to leave (for roughing)
+name        = filenameStub + "_Finishing";
+gCode       = machine.getMillPathGCodeAsSub(name);
+gCodePattern = milling.getGCodeForPattern(name);
+fid = fopen(fullfile(folderCNC, name + ".cnc"), 'w');
+fprintf(fid, '%s', gCodePattern + gCode);
+fclose(fid);
 
-milling depth (Z)
+machine.resetMachine();
 
-curve tolerance (for adaptive sampling)
+where:
+- filenameStub is a user-chosen prefix for the CNC file. It is set at the top of the script. It will also be the name of the G-code subroutine.
+- gCode is the G-code for a single tooth gap, wrapped up in a subroutine.
+- gCodePattern is the additional header G-code that calls the subroutine in a circular pattern, once for each tooth
+- machine.resetMachine() resets the machine for a next operation. It will require again to set a tool, a feed and a millPath.
 
-machine configuration (3‑axis or 4‑axis)
+The logic for the circular pattern uses G68, G69 for coordinate rotations in the XY plane, and relies in the language extensions built in the Eding CNC controller. This is the only part of the G-code that may not be compatible with other controllers, and that may therefore require either manual corrections or some rewriting of the code.
 
-From these, CBT_GearMilling constructs the toolpaths in object coordinates.
 
-3. Finishing path (tool centre offset)
-The gear geometry provides the gap curve between two teeth:
-
-fillet at the root
-
-hypocycloid flank
-
-epicycloid flank
-
-This curve describes the material boundary. The tool centre must follow an offset of this boundary.
-
-The finishing offset is:
-
-Code
-offset = millDiameter / 2
-Optionally plus a small stock value if desired.
-
-3.1 Steps to build the finishing path
-Obtain the gap curve from CBT_CycloidGear as a function of a parameter.
-
-Compute the offset curve for the tool centre at the chosen offset.
-
-Apply adaptive sampling to the offset curve to meet a geometric tolerance.
-
-Build a CBT_Layer at the finishing depth Z.
-
-Convert sampled points into CBT_Trace objects (cuts, lead‑ins, lead‑outs).
-
-Assemble the traces into a CBT_MillPath.
-
-This produces a single finishing path for one gap.
-
-4. Roughing paths
-Roughing paths remove material before the finishing pass. They are generated as inner offsets of the gap curve, leaving radial stock.
-
-Typical roughing offset:
-
-Code
-offsetRough = millDiameter / 2 + stockToLeave
-Roughing is usually done in multiple Z levels:
-
-first pass at shallow depth
-
-subsequent passes stepping down to final depth
-
-Each roughing level is a separate CBT_Layer with its own traces.
-
-5. Adaptive sampling
-To avoid excessive point counts and uneven spacing, the offset curves are sampled adaptively.
-
-The algorithm:
-
-starts with a segment between two parameter values
-
-evaluates the true curve at the midpoint
-
-compares the midpoint to the straight line between endpoints
-
-if the deviation exceeds a tolerance, splits the segment
-
-repeats recursively
-
-This yields:
-
-more points where curvature is high (fillet, tight cycloid regions)
-
-fewer points where the curve is nearly straight
-
-a good balance between accuracy and file size
-
-Typical tolerances:
-
-Code
-0.01 mm to 0.001 mm
-Smaller tolerances produce more points and larger G‑code files.
-
-6. Circular tooth pattern
-The finishing and roughing paths described above cover one gap between two teeth. To mill the full gear, this gap must be repeated around the pitch circle.
-
-The circular pattern is implemented in G‑code using:
-
-a subroutine containing the gap toolpath
-
-a loop that rotates the coordinate system for each tooth
-
-a rotation command (G68 in Eding CNC) to apply the angle
-
-6.1 Structure of the G‑code
-Conceptually:
-
-Code
-SUB GearGap
-  ... toolpath for one gap ...
-ENDSUB
-
-#NTeeth = <tooth count>
-#Angle  = 360.0 / #NTeeth
-
-i = 0
-Do While i < #NTeeth
-  G68 ... rotate by i * #Angle ...
-  CALL GearGap
-  i = i + 1
-Loop
-The subroutine GearGap contains only the toolpath for one gap.
-
-The loop and G68 rotation live in the header of the G‑code file.
-
-The subroutine body is controller‑independent; only the header uses Eding extensions.
-
-On other controllers, the user may need to:
-
-replace Do While and variables with that controller’s macro syntax
-
-replace G68 with the equivalent rotation command
-
-or unroll the loop manually by repeating the subroutine call with different angles.
-
-7. Tool compensation and normals
-The gear‑milling workflow does not use controller‑side tool compensation (no G41, G42, G43). Instead:
-
-the tool centre path is computed explicitly in object coordinates
-
-the offset curve already accounts for tool radius
-
-the CAM does not attempt to compute surface normals or apply automatic compensation
-
-This is necessary because:
-
-tilted tools and ball‑nose cutters complicate normal‑based compensation
-
-general surface normals on complex shapes are best handled in CAD/CAM (e.g. Fusion)
-
-controller‑side compensation is unreliable for 3D contouring
-
-For gear milling, the explicit offset curve is sufficient and robust.
-
-8. Practical workflow
-A typical gear‑milling workflow is:
-
-Define gear geometry in CBT_CycloidGear.
-
-Create a CBT_GearMilling instance with gear + milling parameters.
-
-Generate finishing and roughing paths (one gap).
-
-Build a CBT_MillPath from these layers.
-
-Create a CBT_MillingMachine with the appropriate configuration.
-
-Map the MillPath to G‑code and write a .cnc file.
-
-Inspect and, if necessary, adapt the header (loop, rotation, macros) for the target controller.
-
-Run a dry‑run or air‑cut before cutting material.
-
-9. Summary
-CBT_GearMilling provides a gear‑specific layer on top of the general CAM suite:
-
-uses cycloidal gear geometry from CBT_CycloidGear
-
-builds offset curves for tool centre paths
-
-generates roughing and finishing layers
-
-applies adaptive sampling for efficient, accurate toolpaths
-
-creates a circular tooth pattern via subroutines and coordinate rotation
-
-outputs G‑code tuned to Eding CNC, with a header that may need adaptation for other controllers
-
-This keeps the gear‑milling logic compact and focused, while reusing the general CAM machinery for path representation and G‑code generation.
