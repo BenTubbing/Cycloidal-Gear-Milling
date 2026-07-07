@@ -5,11 +5,14 @@ The code in the milling section represents a CAM suite for 3-axes or 4-axes mill
 The application here to milling of gear wheels is relatively straightforward and requires only part of the functionalities. It is detailed in a separate document.
 
 We distinguish between:
+
 Object coordinates: 
 - cartesian x1, x2, x3 for a position on the object
 - phi and theta polar angles (in radians) defining the orientation of the mill
+
 Machine coordinates:
 - X, Y, Z, A, B
+
 As we have a swivel machine, theta will be a fixed angle and it maps to the swivel angle B. Phi maps to the 4'th axis angle A.
 The implementation is such that, on a four axis machine with A parallel X, if one changes phi for constand x1, x2, x3, both the A and Y axes move so that the mill stays in the same place on the object, but changes orientation. This behaviour is ideal for contouring complex 3D surfaces with a ball-nose mill, where the machine coordinates essentially refer to the centre of the ball. 
 
