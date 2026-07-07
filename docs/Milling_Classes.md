@@ -26,7 +26,7 @@ Once a MillPath has been designed one creates the machine (CBT_MillingMachine). 
 - 4 axes with A parallel Z
 The user chooses the type when creating the machine object.
 
-Subsequently, after setting a tool and a set of feeds, the user passes the millpath to the machine. And the machine can create the G-code and write it to a file.
+Subsequently, after setting a tool and a set of feeds, the user passes the millpath to the machine. And the machine can create the G-code and write it to a file, with extension .cnc.
 
 It is often advantageous to generate the G-code in the form of a subroutine, which the user can fold into his / her own G-code. This is supported.
 
