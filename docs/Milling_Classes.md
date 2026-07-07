@@ -28,5 +28,12 @@ The user chooses the type when creating the machine object.
 
 Subsequently, after setting a tool and a set of feeds, the user passes the millpath to the machine. And the machine can create the G-code and write it to a file.
 
-It is often advantageous to generate the G-code in the form of a subroutine, which the user can call from within his / her own G-code. This is supported.
+It is often advantageous to generate the G-code in the form of a subroutine, which the user can fold into his / her own G-code. This is supported.
+
+** Caveats **
+The angles phi and theta are in radians. They are mapped to A and B by the machine object. In my EMCO case, the mapping for theta is: B = 90 * (pi/2 - theta). This is just by convention.
+
+The core of the G-code is universal, except for the use of keyword SUB and ENDSUB when experting G-code as a subroutine. This is easily in editing the G-code file.
+
+In the specific gear milling application, the EDING CNC controller language extension (Do While, control of variables) are used to program the coordinate rotations cycling over the teeth. The user may need to adapt for other controllers. This affects only the header part of the G-code file, not the subroutines. 
 
