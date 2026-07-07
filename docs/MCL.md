@@ -11,17 +11,16 @@ The implementation was written for an EMCO F1CNC equipped with an Eding CNC cont
 The CAM suite distinguishes between object coordinates and machine coordinates.
 
 1.1 Object coordinates
-When designing a toolpath, the CAM system works entirely in object coordinates. This means that every tool position is described by two things:
-- Where the tool is — the Cartesian point (x1, x2, x3)
-- How the tool is oriented — the direction of the tool axis in object space
-
-This tool orientation is expressed using two angles:
+In this CAM system, the toolpath is designed in object coordinates. This means that every tool position is described by two things:
+- Where the tool is: the vector from the object origin to the tool centre. The coordinates are x1, x2, x3 (notation to distinguish from machine X, Y, Z)
+- How the tool is oriented: a vector along the tool axis in object space. It is given by the angles theta and phi, as in aspherical polar coordinate system.
+where:
 - theta — the tilt of the tool axis relative to the object’s vertical direction
 - phi — the rotation of the tool axis around that vertical direction
 
-To repeat: these angles do not (directly) represent a rotation of the object. Instead, they describe the direction of the tool axis as seen by an observer on the object. For illustration: as one would see in 5‑axis machining videos: the tool stays at the same point on the surface but changes orientation. This logic is ideal for ball nose contouring, where x1, x2, x3 are the ball centre position. By changing phi, we can change tool orientation but the tool keeps touching the object at precisely the same spot.
+To illustrate the logic: if one keeps x1, x2, x3 constant but changes phi, the tool stays at the same point on the surface while its axis changes orientation. This is the same behaviour seen in 4‑axis or 5‑axis machining: the tool centre remains fixed on the surface, but the tool tilts or rotates to obtain the correct cutting direction. This logic is ideal for ball nose contouring, where x1, x2, x3 are the ball centre position. By changing phi, we change tool orientation but the tool keeps touching the object at the same spot.
 
-It is important to point out that, given the complex 3D shapes it was designed for, the **CAM does not take care of tool compensation**. Instead, the user is expected to calculate the coordinates of the mill centre. For milling flat shapes with a flat end mill perpendicular, the user therefore has to calculate the normal vector for each object point. Equivalent to G41 or G42. For contouring 3D surfaces with variable tool orientation, the user has to calculate the normal vectors on the surface, multiply by ball radius, and apply the offset to go from object position to mill position.
+**It is important to point out that the CAM does not take care of tool compensation**. Instead, the user needs to supply tool centre coordinates including the correct tool offsets, as calculated from the object's curve or surface normal vectors. This limitation exists because the normal G41, G42, G43 offset compensations work in machine coordinates, but not in object coordinates. Therefore they not apply to general 3D milling with arbitary tool orientations and ballnose mills. The user also has to specify the "zero point", i.e. the object coordinates for which the machine's work coordinates will be set 0.
 
 1.2 Machine coordinates
 After a tool path is designed, the machine mapping then converts this object‑space orientation into actual machine axes (X, Y, Z, A, B). To follow the discussion just above: on a 4‑axis machine, changing phi while keeping (x1, x2, x3) fixed causes coordinated motion of A and Y so that the tool centre remains on the same point of the object while the tool axis rotates. Obviously, the mapping from object coordinates to machine coordinates depends on the machine configuration.
@@ -71,6 +70,7 @@ Tools are defined in CBT_Tools. Two types are supported:
 Once a MillPath is defined, the user creates a CBT_MillingMachine object. The machine:
 
 - maps object coordinates to machine coordinates (X, Y, Z, A, B)
+- takes care of making machine coordinates relative to the object's zero-point - which maps to the work origin.
 - applies feeds according to the tracetypes
 - converts the millpath into G‑code
 - writes the G‑code to a .cnc file
