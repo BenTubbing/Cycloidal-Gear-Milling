@@ -24,14 +24,14 @@ classdef CBT_GearMilling < handle
     end
 
     methods
-        function createFinishingMillCurve(obj, tol, millDiameter, stockToLeave, safeR)
+        function createFinishingMillCurve(obj, tol, millDiameter, stockToLeave, xClearance)
             millRadius = millDiameter / 2.0;
 
             if millRadius > obj.cycloidGear.radiusFillet
                 error("CBT_GearMilling.createFinishingMillCurve: mill radius > fillet radius");
             end
 
-            radiusStart = obj.rStock + millRadius + safeR;
+            radiusStart = obj.rStock + millRadius + xClearance;
             [obj.ptFStart, obj.alphaFStart] = obj.cycloidGear.offsetAlphaAtX(radiusStart, millRadius + stockToLeave);
 
             funO = @(a) obj.cycloidGear.offsetToothCurve(a, millRadius + stockToLeave);
