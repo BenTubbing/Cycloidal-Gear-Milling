@@ -14,6 +14,8 @@ This repository provides a full MATLAB implementation of cycloidal gear geometry
 
 The codebase is modular, mathematically rigorous, and structured for clarity and extensibility.
 
+**The scripts in the scripts folder represents the user-interface. With them the user can create gear geometry, exports (CSV, OBJ), and create G-code files (CNC). The scrpits folder also contains a few utility scripts that can help design.**
+
 ## Repository Structure
 
 ```
