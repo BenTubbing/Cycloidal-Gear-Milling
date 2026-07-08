@@ -38,9 +38,7 @@ cycloidal-gear-milling/
 ├── scripts/
 │   ├── CycloidGearMilling.m
 │   ├── CycloidGearToCSVAndOBJ.m
-│   └── PinionAndWheelSet.m
-│
-├── examples/
+│   ├── PinionAndWheelSet.m
 │   ├── FilletRadiusFunctionOfHd.m
 │   ├── Optimise3StageGearTrain.m
 │   └── Optimise4StageGearTrain.m
