@@ -2,7 +2,7 @@
 
 This document gives an introduction to the scripts in the scripts folder. They are the primary user-interfaces.
 
-We will not repeat the presentation of the CycloidGearMilling.m script. It is already covered in the Gear_milling.md document. Hence, the scope here covers the export script and the usitility scripts. *Where we note that exports are also available as an option at the bottom of the CycloidGearMilling.m script.*
+We will not repeat the presentation of the CycloidGearMilling.m script. It is already covered in the Gear_milling.md document. Hence, the scope here covers the export script and the utitility scripts. *Where we note that exports are also available as an option at the bottom of the CycloidGearMilling.m script.*
 
 # Export Script CycloidGearToCSVAndOBJ.m -> 3D printing
 The export script converts tooth shapes into formats suitable for CAD systems. We expect them to be used for:
@@ -17,13 +17,14 @@ By default, the exports include a point outside of the tooth, which is a linear 
 Fusion supports reading of CSV polyline files, using a script under the Utilities tab. It has the following particularities:
 - It requires a header
 - It requires X, Y, Z data
-- It imports in **centimeters** -> assuming our code works in mm, values are divided by 10 on output.
+- It imports in **centimeters** -> assuming our code works in mm, values are divided by 10 so that Fusion receives coordinates in centimeters.
 Our CSV exports satisfies these requirements: output is converted to cm units.
 The Fusion script will create a sketch with the imported points / polyline.
 
 # The OBJ export
 The OBJ export script writes a 3D mesh with a user‑specified thickness. This is useful when the user prefers to work with bodies rather than sketches.
-The OBJ file contains an extrusion to user-defined thickness. The extrusion is symmetric in the XY plane, half-thickness up, half down. Here, there is no unit conversion.
+The OBJ file contains an extrusion to user-defined thickness. The extrusion is symmetric about the XY plane: half the thickness above, half below.
+The file then contains:
 - vertices
 - faces
 
