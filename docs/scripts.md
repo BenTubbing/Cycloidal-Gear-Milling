@@ -2,7 +2,7 @@
 
 In this document we do not repeat the presentation of the CycloidGearMilling.m script. It is already covered in the Gear_milling.md document. Hence, the scope here covers the export script and the usitility scripts. Where we note that exports are also availaibe as an option at the bottom of the CycloidGearMilling.m script.
 
-# Export Script CycloidGearToCSVAbdOBJ.m
+# Export Script CycloidGearToCSVAndOBJ.m
 The export script converts tooth shapes into formats suitable for CAD systems, such as (in particular) Fusion.
 We deliberate limit the amount of data in these exports by providing only one tooth or half-tooth. The reason is that Fusion tends to slow down significantly when dealing with large polylines or large meshes. It is best to work in Fusion as long as possible on a sector, and only create the entire tooth (using a circular pattern) at the last moment. For example for 3D printing. It is also important not to exaggerate the requested tolerance, as tighter tolerance increases the size of the exports.
 
