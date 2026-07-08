@@ -1,160 +1,68 @@
 # Overview of the scripts
 
-In this document we do not repeat the presentation of the CycloidGearMilling.m script. It is already covered in the Gear_milling.md document. Hence, the scope here covers the export script and the usitility scripts. Where we note that exports are also availaibe as an option at the bottom of the CycloidGearMilling.m script.
+This document gives an introduction to the scripts in the scripts folder. They are the primary user-interfaces.
 
-# Export Script CycloidGearToCSVAndOBJ.m
-The export script converts tooth shapes into formats suitable for CAD systems, such as (in particular) Fusion.
-We deliberate limit the amount of data in these exports by providing only one tooth or half-tooth. The reason is that Fusion tends to slow down significantly when dealing with large polylines or large meshes. It is best to work in Fusion as long as possible on a sector, and only create the entire tooth (using a circular pattern) at the last moment. For example for 3D printing. It is also important not to exaggerate the requested tolerance, as tighter tolerance increases the size of the exports.
+We will not repeat the presentation of the CycloidGearMilling.m script. It is already covered in the Gear_milling.md document. Hence, the scope here covers the export script and the usitility scripts. *Where we note that exports are also available as an option at the bottom of the CycloidGearMilling.m script.*
+
+# Export Script CycloidGearToCSVAndOBJ.m -> 3D printing
+The export script converts tooth shapes into formats suitable for CAD systems. We expect them to be used for:
+- preparation of 3D printing files
+- design of decorative elements on gearwheels and their milling using Fusion CAM
+
+We deliberate limit the amount of data in these exports by providing only one tooth or half-tooth. The reason: Fusion tends to slow down significantly when dealing with large polylines or large meshes. It is best to work in Fusion as long as possible on a single sector, and only create the entire tooth (using a circular pattern and combine-bodies) at the last moment. For example for 3D printing. It is also important not to exaggerate the requested tolerance, as tighter tolerance increases the size of the exports.
+
+By default, the exports include a point outside of the tooth, which is a linear extrapolation of the outer element of the tooth. This allows, for example, to create a body that is used in Fusion as a knife, cutting out a tooth from a cylindrical sector instead of being used additive. In any case, the outer point can be deleted, or the mesh can be clipped at the gear outer dadius. 
 
 # The CSV export
-Fusion, under utilities, supports reading of CSV polyline files. It has the following particularities:
+Fusion supports reading of CSV polyline files, using a script under the Utilities tab. It has the following particularities:
 - It requires a header
 - It requires X, Y, Z data
-- It imports in **centimeters**
-Our CSV exports satisfies these requirements: it is in cm units.
-
-Fusion creates a sketch with the imported polyline.
+- It imports in **centimeters** -> assuming our code works in mm, values are divided by 10 on output.
+Our CSV exports satisfies these requirements: output is converted to cm units.
+The Fusion script will create a sketch with the imported points / polyline.
 
 # The OBJ export
+The OBJ export script writes a 3D mesh with a user‑specified thickness. This is useful when the user prefers to work with bodies rather than sketches.
+The OBJ file contains an extrusion to user-defined thickness. The extrusion is symmetric in the XY plane, half-thickness up, half down. Here, there is no unit conversion.
+- vertices
+- faces
 
+Fusion imports OBJ meshes reliably. However, as with the CSVs, Fusion’s spline engine slows down with large point sets. In our experience it is easier to deal with the CSV input.
 
+# Fillet Radius script FilletRadiusFunctionOfHd.m
+When CNC milling gears in this way, the fillet radius is an important factor in the process. Fillet radius must be larger than tool radius plus any stock to leave. And even without stock to leave, it is not good practice to give the mill some room of manouvre at the bottom of the fillet.
 
-The CSV export script writes a 2D point set to a simple comma‑separated file:
+Fillet radius, for a given module, depends on dedendum height hD and tooth count N. We note that, for a given hD, fillet radius decreases with tooth count. In other words, a mill may fit with a pinion, but not with the matching wheel.
 
-Code
-x0, y0
-x1, y1
-...
-Fusion’s “Insert CSV” workflow interprets these points as a polyline. This is useful for:
-
-inspecting geometry
-
-importing a single tooth gap
-
-building sketches based on the curve
-
-Fusion can become slow with large point counts, so the export scripts typically write only one gap section. The user can then mirror and pattern the section inside Fusion.
-
-)))))))))))))))))))))))))))
-
-Units and Format (CSV and OBJ)
-The CSV exporter writes coordinates in centimeters, because Fusion’s CSV importer always interprets values as centimeters regardless of the document’s unit settings. The CSV file includes a header row and three columns (X, Y, Z), with Z = 0 for 2D curves.
-
-The OBJ exporter writes coordinates in millimeters. The curve is extruded symmetrically in the Z direction: a thickness t produces a mesh from Z = -t/2 to Z = +t/2. Fusion imports OBJ meshes directly without unit conversion.
-
-)))))))))))))))))))))))))))
-
-
-
-
-
-
-# OBJ Export
-The OBJ export script writes a 3D mesh with a user‑specified thickness. This is useful when:
-
-a solid representation is needed
-
-the user prefers to work with bodies rather than sketches
-
-Fusion’s spline engine struggles with large point sets
-
-The OBJ file contains:
-
-vertices
-
-faces
-
-a thin extrusion of the 2D curve
-
-Fusion imports OBJ meshes reliably, though editing them is more limited than editing sketches.
-
-# Fillet Radius vs Tooth Count Graph
-This script plots the relationship between:
-
-the fillet radius
-
-the number of teeth
-
-the chosen rolling radii
-
-the dedendum height
-
-The fillet radius is determined by the geometry of the hypocycloid and the chosen dedendum height. As the tooth count changes, the pitch radius changes, and the fillet radius changes accordingly.
-
-The script is useful for:
-
-selecting a mill diameter that fits into the fillet
-
-determining whether rest machining is required
-
-understanding how geometry scales with module and tooth count
-
-The graph helps the user choose:
-
-appropriate roughing mill sizes
-
-appropriate finishing mill sizes
-
-appropriate dedendum height (hD)
-
-The script prints the fillet radius as part of the gear properties and plots it for a range of tooth counts.
+This scripts provides graphs of the fillet radius as a function of tooth count for a range of hD values, all user input. It can help at gear design stage.
 
 # Gear‑Train Optimisation Scripts
-Two scripts are provided for optimising gear trains. They are intended for clockwork or other applications where:
+When designing a gear train, it is typical to know the desired end-to-end ratio, but not how this should be broken down over the various stages. For example, one may break down a 120 ratio as 4, 5, 6, or 4, 5, 2, 3. These choices depend on design desiderate, e.g. to give the first stage pinion the maximum number of teeth, or to fit the train inside some space.
 
-a specific ratio is required
+We provide two scripts that can help design on this point. The user provides:
+- the target end-to-end ratio
+- a array of permitted pinion tooth counts, for example 7, 8, 9. 
+- a range of permissible gear ratios, e.g. from 3 to 4.
 
-tooth counts must be integers
+The scripts provides a list of all pinion / wheel combinations that satisfy these constraints - there tend to be rather a few. The user can then choose.
 
-modules must be practical
+We note that there is always the freedom to swap around the selected pinions (i.e. 9 * 10 * 8 = 10 * 8 * 9) and independently the selected wheels.
 
-rolling radii must be compatible
+The algorithm: 
+- given the pinions, all possible products of pinion counts are calculated
+- these numbers are multiplied by the end-to-end target
+- the resulting numbers are factored into integer numbers that satisfy the range of permitted ratios
 
-dedendum and addendum heights must be feasible
+# Geometry Feasibility Check: PinionAndWheelSet.m
+For this script, the user provides:
+- the parameters to creta a pinion - the usual set
+- the number of teeth on a wheel to match
 
-Ratio Search
-This script searches for combinations of tooth counts that achieve a desired ratio within a tolerance. It evaluates:
+With these inputs, the script:
+- creates a pinion with the user provided parameters
+- then creates a matching wheel with the required number of teeth and with matching parameters
 
-gear pairs
+If the user has chosen different values for the pinion rolling ball ratios rhoA and rhoD, then the wheel will be created with the correct, swapped rhoA and rhoD values. 
 
-gear trains of multiple stages
+The outputs are plotted, and all data of the pinion / wheel set can be inspected.
 
-integer constraints
-
-practical tooth counts (e.g. avoiding very small gears)
-
-The output includes:
-
-candidate tooth counts
-
-achieved ratio
-
-deviation from target
-
-pitch diameters
-
-# Geometry Feasibility Check
-This script checks whether a candidate gear train is geometrically feasible:
-
-rolling radii compatibility
-
-dedendum and addendum heights
-
-fillet radius
-
-mill diameter constraints
-
-minimum tooth count for cycloidal geometry
-
-It is useful for validating gear trains before committing to machining.
-
-# Summary
-The utility scripts provide:
-
-CSV and OBJ export of geometry and milling curves
-
-a fillet‑radius graph for selecting mill sizes
-
-optimisation tools for designing gear trains
-
-These scripts complement the geometry and milling modules and help users explore and validate designs before machining.
