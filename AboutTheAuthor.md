@@ -25,4 +25,5 @@ Married in 1988, he and his wife have three daughters.
 - Current work: a small portable clock with a Lavet-inspired motor and four clock-faces -> hence this work on milling gears
 
 **Acknowledgements**
+
 In the work on the Lavet motor clock and the gears, I am highly grateful for the help of MS Copilot. It would have been much slower without. 
