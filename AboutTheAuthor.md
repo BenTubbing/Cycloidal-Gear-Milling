@@ -23,3 +23,6 @@ Married in 1988, he and his wife have three daughters.
   **Workshop**
 - Myford Super 7B, upgraded EMCO F1-CNC, BambuLab X1 Carbon, Festool and Metabo woodworking saws
 - Current work: a small portable clock with a Lavet-inspired motor and four clock-faces -> hence this work on milling gears
+
+**Acknowledgements**
+In the work on the Lavet motor clock and the gears, I am highly grateful for the help of MS Copilot. It would have been much slower without. 
