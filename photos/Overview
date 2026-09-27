@@ -13,7 +13,7 @@ In this section: some photos
     Drill a hole of 4mm through the stub.
     Back to the mill, again by moving the entire collet holder. Probe for centre.
     Use contour milling to trim the outer perimeter of pinion and wheel.
-    Mill the teeth using the MatLab code.
+    Mill the teeth using the MatLab code. See note below on silversteel.
     Bore the 4mm hole up to 5mm.
     Back to the lathe and part off.
     Where possible, clear up the edges of the ellipses, and use sandpaper to remove machining marks.
@@ -22,4 +22,5 @@ In this section: some photos
 Some key points: 
     Module 1.2 is about as small as one can mill with a mill of 1mm diameter.
     With the millpaths produced here, milling the silversteel was very comfortable. I used a VHM 1mm NaCo mill with short cutting length. On my machine RPM is limited to 3000rpm. Cutting feed about 70mm/min.
+    In addition (for silversteel only) I used multiple cutting depths, stepdown about 0.4mm. (Multiple stepdown is not in the software, but can easily be managed on the machine.)
 
