@@ -1,1 +1,23 @@
-Here are some photos
+In this section: some photos
+
+* 2026-09_FinishedWheels: this is a set of pinion / wheels made in September 2026. 
+    The pinions are silversteel, the wheels and connectors are brass.
+    The parameters are: module 1.2, rolling balls 2.0, addendum height 1.0, dedendum 1.05.
+    Note that, because of the fillets, we can reduce dedendum height to 1.05, instead of the more usual 1.2-ish.
+    The pinion / wheel sets are going to run on 2mm pins, hence the flanged 5x2 bearings visible in the shafts.
+    To manufacture, I soft-soldered an oversized wheel disc on an 8mm shaft, leaving enough length to hold the shaft in a collet.
+    Then trimmed the wheel on the lathe, and moved the entire collet holder to the mill. On the mill, cut the ellipse decorations.
+    Back to the lathe, machine the 8mm stub down to 7 and 6 respectively for the spacer and the piece to fit the pinion.
+    Mildly press fit a pre-prepared disc for the pinion, using superglue.
+    Trim the pinion and wheel to their thicknesses (using a parting tool for the backside of the wheel), but leave both pinion and wheel slightly oversized.
+    Drill a hole of 4mm through the stub.
+    Back to the mill, again by moving the entire collet holder. Probe for centre.
+    Use contour milling to trim the outer perimeter of pinion and wheel.
+    Mill the teeth using the MatLab code.
+    Bore the 4mm hole up to 5mm.
+    Back to the lathe and part off.
+    Where possible, clear up the edges of the ellipses, and use sandpaper to remove machining marks.
+    Drum polish for a few days in 100 grade walnut powder.
+
+
+
